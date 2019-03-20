@@ -14,7 +14,7 @@ class Company extends Component {
 	}
 
 	onAddLocation( e ) {
-		e.preventDefault()
+		e.preventDefault();
 
 		const {
 			newLocationName,
@@ -29,7 +29,9 @@ class Company extends Component {
 		this.setState( {
 			newLocationName: '',
 			newLocationMapUrl: ''
-		} )
+		} );
+
+		this.list.focus();
 	}
 
 	render() {
@@ -45,13 +47,20 @@ class Company extends Component {
 			<div className="company">
 				<h1>Welcome to { name }</h1>
 
-				<p>We are { age } years old!</p>
+				<p>We are <span aria-atomic="true" aria-live="polite" aria-relevant="text" id="year">{ age }</span> years old!</p>
 
-				<button onClick={ addYear }>Add Year</button>
+				<button aria-controls="year" onClick={ addYear }>Add Year</button>
 
-				<p>We are located in the following locations:</p>
+				<h2>We are located in the following locations:</h2>
 
-				<ul className="locations">
+				<ul
+					aria-atomic="false"
+					aria-live="polite"
+					aria-relevant="additions text"
+					className="locations"
+					id="locale-list"
+					ref={( list ) => { this.list = list; }}
+					tabindex="-1">
 					{ locations.map( location => {
 						return (
 							<li key={ location.name }>
@@ -64,22 +73,37 @@ class Company extends Component {
 				<form
 					onSubmit={ this.onAddLocation.bind( this ) }
 				>
-					<input
-						placeholder="Location Name"
-						value={ this.state.newLocationName }
-						onChange={ e => {
-							this.setState( { newLocationName: e.target.value } )
-						} }
-					/><br />
-					<input
-						placeholder="Location Map URL"
-						value={ this.state.newLocationMapUrl }
-						onChange={ e => {
-							this.setState( { newLocationMapUrl: e.target.value } )
-						} }
-					/><br />
+					<div>
+						<label htmlFor="location-name">Location Name: </label>
+						<input
+							id="location-name"
+							name="location-name"
+							onChange={ e => {
+								this.setState( { newLocationName: e.target.value } )
+							} }
+							placeholder="e.g. Boston, MA"
+							required
+							type="text"
+							value={ this.state.newLocationName }
+						/>
+					</div>
+					<div>
+						<label htmlFor="map-url">Location Map URL: </label>
+						<input
+							id="map-url"
+							name="map-url"
+							placeholder="http://..."
+							value={ this.state.newLocationMapUrl }
+							onChange={ e => {
+								this.setState( { newLocationMapUrl: e.target.value } )
+							} }
+							required
+							type="url"
+						/>
+					</div>
 					<button
 						type="submit"
+						aria-controls="locale-list"
 					>
 						Add Location
 					</button>
